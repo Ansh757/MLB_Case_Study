@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex align-items-center gap-3 mt-3 mb-4">
+    <img src="{{ team_logo }}" width="58" height="58" alt="{{ team.name }}">
+    <div>
+        <h1 class="m-0 fw-bold">{{ team.name }}</h1>
+        <div class="text-light small">
+            {{ team.league.name }} • {{ team.division.name }}
+        </div>
+    </div>
+</div>
+
+<h2 class="fw-bold mb-3">Hitters</h2>
+<div class="table-wrap mb-4">
+    <table class="table standings-table mb-0 team-stats-table">
+        <thead>
+        <tr>
+            <th>Pos</th>
+            <th>#</th>
+            <th class="player-col">Batter</th>
+            <th>Age</th>
+            <th>B</th>
+            <th>T</th>
+            <th>PA</th>
+            <th>H</th>
+            <th>2B</th>
+            <th>3B</th>
+            <th>HR</th>
+            <th>SB</th>
+            <th>SO%</th>
+            <th>BB%</th>
+            <th>AVG</th>
+            <th>OBP</th>
+            <th>OPS</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for player in hitters %}
+        <tr>
+            <td>{{ player.position }}</td>
+            <td>{{ player.jersey }}</td>
+            <td class="text-start">
+                <a href="{% url 'player_page' player.id %}" class="team-link">
+                    <img class="headshot-sm" src="{{ player.headshot }}" alt="{{ player.name }}">
+                    {{ player.name }}
+                </a>
+            </td>
+            <td>{{ player.age }}</td>
+            <td>{{ player.bats }}</td>
+            <td>{{ player.throws }}</td>
+            <td>{{ player.pa }}</td>
+            <td>{{ player.h }}</td>
+            <td>{{ player.doubles }}</td>
+            <td>{{ player.triples }}</td>
+            <td>{{ player.hr }}</td>
+            <td>{{ player.sb }}</td>
+            <td>{{ player.so_pct }}</td>
+            <td>{{ player.bb_pct }}</td>
+            <td>{{ player.avg }}</td>
+            <td>{{ player.obp }}</td>
+            <td>{{ player.ops }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h2 class="fw-bold mb-3">Pitchers</h2>
+<div class="table-wrap mb-4">
+    <table class="table standings-table mb-0 team-stats-table">
+        <thead>
+        <tr>
+            <th>Pos</th>
+            <th>#</th>
+            <th class="player-col">Pitcher</th>
+            <th>Age</th>
+            <th>G</th>
+            <th>IP</th>
+            <th>BF</th>
+            <th>ERA</th>
+            <th>SO</th>
+            <th>BB</th>
+            <th>SO%</th>
+            <th>BB%</th>
+            <th>OPS</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for player in pitchers %}
+        <tr>
+            <td>{{ player.position }}</td>
+            <td>{{ player.jersey }}</td>
+            <td class="text-start">
+                <a href="{% url 'player_page' player.id %}" class="team-link">
+                    <img class="headshot-sm" src="{{ player.headshot }}" alt="{{ player.name }}">
+                    {{ player.name }}
+                </a>
+            </td>
+            <td>{{ player.age }}</td>
+            <td>{{ player.g }}</td>
+            <td>{{ player.ip }}</td>
+            <td>{{ player.bf }}</td>
+            <td>{{ player.era }}</td>
+            <td>{{ player.so }}</td>
+            <td>{{ player.bb }}</td>
+            <td>{{ player.so_pct }}</td>
+            <td>{{ player.bb_pct }}</td>
+            <td>{{ player.ops_allowed }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="section-band mt-4">
+    <div class="page-wrap py-0">
+        <h2 class="fw-bold mb-3">{{ team.name }} News</h2>
+
+        <div class="row g-3 mb-5">
+            {% for item in news %}
+            <div class="col-md-3">
+                <a href="{{ item.link }}" target="_blank" class="text-decoration-none">
+                    <div class="card-white news-card h-100">
+                        <img src="{% if item.image_url %}{{ item.image_url }}{% else %}https://via.placeholder.com/400x180?text=MLB+News{% endif %}"
+                             alt="{{ item.title }}">
+                        <div class="p-3">
+                            <div class="fw-bold mb-2">{{ item.title }}</div>
+                            <div class="small text-muted">{{ item.author }}</div>
+                            <div class="small text-primary">{{ item.published }}</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<h2 class="fw-bold mb-3 mt-4">Team Leaders</h2>
+<div class="row g-3">
+    {% for leader in leaders %}
+    <div class="col-md-3">
+        <div class="leader-box">
+            <div class="leader-top">{{ leader.label }}</div>
+            <div class="leader-body d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img class="headshot-sm" src="{{ leader.headshot }}" alt="{{ leader.player_name }}">
+                    <div>
+                        <a href="{% url 'player_page' leader.player_id %}"
+                           class="text-white text-decoration-none fw-semibold">
+                            {{ leader.player_name }}
+                        </a>
+                        <div class="small">{{ leader.team_abbrev }}</div>
+                    </div>
+                </div>
+                <div class="fw-bold">{{ leader.value }}</div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

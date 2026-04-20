@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="section-title">Standings</h1>
+
+<div class="row g-3">
+    {% for division in standings %}
+    <div class="col-lg-6">
+        <div class="table-wrap standings-card">
+            <table class="table standings-table mb-0">
+                <thead>
+                <tr>
+                    <th class="division-col">{{ division.division_name }}</th>
+                    <th>W</th>
+                    <th>L</th>
+                    <th>Pct</th>
+                    <th>GB</th>
+                    <th>L10</th>
+                    <th>Diff</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for team in division.teams %}
+                <tr>
+                    <td class="team-cell">
+                        <a href="{% url 'team_page' team.team_id %}" class="team-link">
+                            <img class="team-logo-sm" src="{{ team.logo }}" alt="">
+                            {{ team.abbrev }}
+                        </a>
+                    </td>
+                    <td>{{ team.wins }}</td>
+                    <td>{{ team.losses }}</td>
+                    <td>{{ team.pct }}</td>
+                    <td>{{ team.gb }}</td>
+                    <td>{{ team.l10 }}</td>
+                    <td>{% if team.diff > 0 %}+{{ team.diff }}{% else %}{{ team.diff }}{% endif %}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="section-band mt-3">
+    <div class="page-wrap py-0">
+        <h1 class="section-title">MLB News</h1>
+
+        <div class="row g-3">
+            {% for item in news %}
+            <div class="col-md-3">
+                <a href="{{ item.link }}" target="_blank" class="text-decoration-none">
+                    <div class="card-white news-card h-100">
+                        {% if item.image_url %}
+                        <img src="{% if item.image_url %}{{ item.image_url }}{% else %} https://via.placeholder.com/400x180?text=MLB+News{% endif %}"
+                             alt="{{ item.title }}">
+                        {% endif %}
+                        <div class="p-3">
+                            <div class="fw-bold mb-2">{{ item.title }}</div>
+                            <div class="small text-muted">{{ item.author }}</div>
+                            <div class="small text-primary">{{ item.published }}</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-5 mb-3">
+    <h1 class="section-title m-0">League Leaders</h1>
+    <a href="{% url 'leaders_page' %}" class="text-white text-decoration-none">
+        View All <i class="fa-solid fa-arrow-right"></i>
+    </a>
+</div>
+
+<div class="row g-3">
+    {% for leader in leaders %}
+    <div class="col-md-3">
+        <div class="leader-box">
+            <div class="leader-top">{{ leader.label }}</div>
+            <div class="leader-body d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img class="headshot-sm" src="{{ leader.headshot }}" alt="{{ leader.player_name }}">
+                    <div>
+                        {% if leader.player_id %}
+                        <a href="{% url 'player_page' leader.player_id %}"
+                           class="text-white text-decoration-none fw-semibold">
+                            {{ leader.player_name }}
+                        </a>
+                        {% else %}
+                        <span class="text-white fw-semibold">{{ leader.player_name }}</span>
+                        {% endif %}
+                        <div class="small">{{ leader.team_abbrev }}</div>
+                    </div>
+                </div>
+                <div class="fw-bold">{{ leader.value }}</div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

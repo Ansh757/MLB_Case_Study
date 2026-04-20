@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if player %}
+<div class="d-flex justify-content-between align-items-start mt-3 mb-4">
+    <div class="d-flex align-items-center gap-3">
+        <img src="{{ headshot }}" width="60" height="60" class="rounded-circle" alt="{{ player.fullName }}">
+        <div>
+            <h1 class="m-0 fw-bold">{{ player.fullName }}</h1>
+            <div class="text-light">
+                {{ player.primaryPosition.abbreviation }} {{ player.currentTeam.name }}
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-4 text-end">
+        {% if is_pitcher %}
+        <div>
+            <div class="small text-info">Throws</div>
+            <div class="fw-bold">{{ player.pitchHand.code }}</div>
+        </div>
+        {% else %}
+        <div>
+            <div class="small text-info">B / T</div>
+            <div class="fw-bold">{{ player.batSide.code }}/{{ player.pitchHand.code }}</div>
+        </div>
+        {% endif %}
+        <div>
+            <div class="small text-info">Age</div>
+            <div class="fw-bold">{{ player.currentAge }}</div>
+        </div>
+        <div>
+            <div class="small text-info">Height</div>
+            <div class="fw-bold">{{ player.height }}</div>
+        </div>
+        <div>
+            <div class="small text-info">Weight</div>
+            <div class="fw-bold">{{ player.weight }}</div>
+        </div>
+        <div>
+            <div class="small text-info">Drafted</div>
+            <div class="fw-bold">{{ player.draftYear }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="table-wrap mb-4">
+    <table class="table standings-table mb-0 player-stats-table">
+        <thead>
+        {% if is_pitcher %}
+        <tr>
+            <th>Year</th>
+            <th>Team</th>
+            <th>G</th>
+            <th>GS</th>
+            <th>BF</th>
+            <th>IP</th>
+            <th>ERA</th>
+            <th>WHIP</th>
+            <th>SO</th>
+            <th>BB</th>
+            <th>SO%</th>
+            <th>BB%</th>
+            <th>SO/9</th>
+            <th>BB/9</th>
+            <th>SO/BB</th>
+            <th>HR</th>
+            <th>HR/9</th>
+        </tr>
+        {% else %}
+        <tr>
+            <th>Year</th>
+            <th>Team</th>
+            <th>G</th>
+            <th>PA</th>
+            <th>H</th>
+            <th>R</th>
+            <th>2B</th>
+            <th>3B</th>
+            <th>HR</th>
+            <th>AVG</th>
+            <th>OBP</th>
+            <th>SLG</th>
+            <th>OPS</th>
+            <th>BABIP</th>
+            <th>SO</th>
+            <th>BB</th>
+            <th>SO%</th>
+            <th>BB%</th>
+            <th>SB</th>
+            <th>CS</th>
+        </tr>
+        {% endif %}
+        </thead>
+        <tbody>
+        {% for row in stat_rows %}
+        {% if row.row_type == "projected" %}
+        <tr style="background:#f3e4c5;">
+            {% elif row.row_type == "career" %}
+        <tr style="background:#dbe8f6;">
+            {% else %}
+        <tr>
+            {% endif %}
+            <td>{{ row.season_label }}</td>
+            <td class="text-start">
+                {% if row.row_type == "career" %}
+                -
+                {% elif row.team_id %}
+                <a href="{% url 'team_page' row.team_id %}" class="team-link">
+                    <img class="team-logo-sm" src="{{ row.team_logo }}" alt="">
+                    {{ row.team_name }}
+                </a>
+                {% else %}
+                {{ row.team_name }}
+                {% endif %}
+            </td>
+
+            {% if is_pitcher %}
+            <td>{{ row.g }}</td>
+            <td>{{ row.gs }}</td>
+            <td>{{ row.bf }}</td>
+            <td>{{ row.ip }}</td>
+            <td>{{ row.era }}</td>
+            <td>{{ row.whip }}</td>
+            <td>{{ row.so }}</td>
+            <td>{{ row.bb }}</td>
+            <td>{{ row.so_pct }}</td>
+            <td>{{ row.bb_pct }}</td>
+            <td>{{ row.so9 }}</td>
+            <td>{{ row.bb9 }}</td>
+            <td>{{ row.sobb }}</td>
+            <td>{{ row.hr }}</td>
+            <td>{{ row.hr9 }}</td>
+            {% else %}
+            <td>{{ row.g }}</td>
+            <td>{{ row.pa }}</td>
+            <td>{{ row.h }}</td>
+            <td>{{ row.r }}</td>
+            <td>{{ row.doubles }}</td>
+            <td>{{ row.triples }}</td>
+            <td>{{ row.hr }}</td>
+            <td>{{ row.avg }}</td>
+            <td>{{ row.obp }}</td>
+            <td>{{ row.slg }}</td>
+            <td>{{ row.ops }}</td>
+            <td>{{ row.babip }}</td>
+            <td>{{ row.so }}</td>
+            <td>{{ row.bb }}</td>
+            <td>{{ row.so_pct }}</td>
+            <td>{{ row.bb_pct }}</td>
+            <td>{{ row.sb }}</td>
+            <td>{{ row.cs }}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h2 class="fw-bold mb-3">Recent Games</h2>
+<div class="table-wrap mb-4">
+    <table class="table standings-table mb-0 player-stats-table">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>Opp</th>
+            {% if is_pitcher %}
+            <th>IP</th>
+            <th>SO</th>
+            <th>BB</th>
+            <th>ERA</th>
+            {% else %}
+            <th>AB</th>
+            <th>H</th>
+            <th>HR</th>
+            <th>RBI</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for game in recent_games %}
+        <tr>
+            <td>{{ game.date }}</td>
+            <td>
+                {% if game.opponent %}
+                {{ game.opponent.name }}
+                {% endif %}
+            </td>
+            {% if is_pitcher %}
+            <td>{{ game.ip }}</td>
+            <td>{{ game.so }}</td>
+            <td>{{ game.bb }}</td>
+            <td>{{ game.era }}</td>
+            {% else %}
+            <td>{{ game.ab }}</td>
+            <td>{{ game.h }}</td>
+            <td>{{ game.hr }}</td>
+            <td>{{ game.rbi }}</td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+            {% if is_pitcher %}
+            <td colspan="6">No recent games found.</td>
+            {% else %}
+            <td colspan="6">No recent games found.</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<h1 class="section-title">Player not found</h1>
+{% endif %}
+
+{% endblock %}

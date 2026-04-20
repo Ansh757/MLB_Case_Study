@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="section-title">Standings</h1>
+
+<div class="row g-3">
+    {% for division in standings %}
+    <div class="col-lg-6">
+        <div class="table-wrap standings-card">
+            <table class="table standings-table mb-0">
+                <thead>
+                <tr>
+                    <th class="division-col">{{ division.division_name }}</th>
+                    <th>W</th>
+                    <th>L</th>
+                    <th>Pct</th>
+                    <th>GB</th>
+                    <th>L10</th>
+                    <th>Diff</th>
+                    <th>Home</th>
+                    <th>Away</th>
+                    <th>1Run</th>
+                    <th>XInn</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for team in division.teams %}
+                <tr>
+                    <td class="team-cell">
+                        <a href="{% url 'team_page' team.team_id %}" class="team-link">
+                            <img class="team-logo-sm" src="{{ team.logo }}" alt="{{ team.abbrev }}">
+                            {{ team.abbrev }}
+                        </a>
+                    </td>
+                    <td>{{ team.wins }}</td>
+                    <td>{{ team.losses }}</td>
+                    <td>{{ team.pct }}</td>
+                    <td>{{ team.gb }}</td>
+                    <td>{{ team.l10 }}</td>
+                    <td>{% if team.diff > 0 %}+{{ team.diff }}{% else %}{{ team.diff }}{% endif %}</td>
+                    <td>{{ team.home_pct }}</td>
+                    <td>{{ team.away_pct }}</td>
+                    <td>{{ team.one_run_pct }}</td>
+                    <td>{{ team.extra_inning_pct }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

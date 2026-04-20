@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="section-title">Leaderboards</h1>
+
+{% for section in leader_sections %}
+<div class="mb-4">
+    <h2 class="fw-bold mb-3">{{ section.label }}</h2>
+    <div class="table-wrap">
+        <table class="table standings-table mb-0 leaderboard-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th class="player-col">Player</th>
+                <th>Team</th>
+                <th>{{ section.label }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for player in section.leaders %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td class="text-start">
+                    <a href="{% url 'player_page' player.player_id %}" class="team-link">
+                        <img class="headshot-sm" src="{{ player.headshot }}" alt="{{ player.player_name }}">
+                        {{ player.player_name }}
+                    </a>
+                </td>
+                <td class="text-start">
+                    {% if player.team_id %}
+                    <a href="{% url 'team_page' player.team_id %}" class="team-link">
+                        <img class="team-logo-sm" src="{{ player.team_logo }}" alt="{{ player.team_abbrev }}">
+                        {{ player.team_abbrev }}
+                    </a>
+                    {% else %}
+                    {{ player.team_abbrev }}
+                    {% endif %}
+                </td>
+                <td>{{ player.value }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No data found.</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
