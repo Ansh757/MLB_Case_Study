@@ -126,8 +126,7 @@ The UI is built with:
 
 - Clone the repo
 ```commandline
-git clone <your-repo-url>
-cd <your-project-folder>
+git clone https://github.com/Ansh757/MLB_Case_Study.git
 ```
 
 - Create and Activate Virtual Env
@@ -139,6 +138,10 @@ source .venv/bin/activate
 - Install Dependencies 
 ```commandline
 pip install -r requirements.txt
+```
+- Cd into Config
+```commandline
+cd config
 ```
 
 - Run Migrations
